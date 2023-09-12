@@ -3,7 +3,10 @@ package com.ddas.androidapp.ui.main;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
+
+import com.ddas.androidapp.R;
+import com.ddas.androidapp.ui.login.LoginActivity;
+import com.ddas.androidapp.util.ActivityManager;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -11,25 +14,14 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//
-//        checkAuthentication();
+        setContentView(R.layout.activity_main);
+
+        checkAuthentication();
     }
 
     private void checkAuthentication()
     {
-
-//        if(firebase.getCurrentUser() == null)
-//        {
-//            Log.d("DEVELOPMENT:MainActivity", "authentication:failure");
-//            ActivityManager.redirectToActivity(this, LoginActivity.class);
-//
-//        }
-//        else
-//        {
-//            Log.d("DEVELOPMENT:MainActivity", "authentication:success");
-//        }
+        // TODO: Authenticate user and save token to shared preferences
+        ActivityManager.redirectToActivity(this, LoginActivity.class);
     }
-
-//    private final FirebaseManager firebase = FirebaseManager.getInstance();
 }
