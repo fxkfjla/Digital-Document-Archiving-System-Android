@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">AndroidApp</string>
+    <string name="ENTER_EMAIL">Email</string>
+    <string name="ENTER_PASSWORD">Password</string>
+    <string name="ENTER_RE_PASSWORD">Repeat Password</string>
+    <string name="ALREADY_REGISTERED">Already registered?</string>
+    <string name="NO_ACCOUNT">No account?</string>
+    <string name="LOGIN_BUTTON_TEXT">Login</string>
+    <string name="REGISTER_BUTTON_TEXT">Register</string>
+    <string name="EMAIL_IS_REQUIRED">Email is required</string>
+    <string name="EMAIL_IS_NOT_VALID">Email is not valid</string>
+    <string name="PASSWORD_IS_REQUIRED">Password is required</string>
+    <string name="PASSWORD_IS_NOT_VALID">Password is not valid</string>
+    <string name="REPEAT_THE_PASSWORD">Repeat the password</string>
+    <string name="PASSWORDS_NOT_MATCH">Passwords do not match</string>
 </resources>
