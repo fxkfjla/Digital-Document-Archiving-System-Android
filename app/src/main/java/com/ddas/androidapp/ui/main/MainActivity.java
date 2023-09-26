@@ -1,11 +1,13 @@
 package com.ddas.androidapp.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
 import com.ddas.androidapp.R;
-import com.ddas.androidapp.ui.login.LoginActivity;
+import com.ddas.androidapp.databinding.ActivityMainBinding;
 import com.ddas.androidapp.util.ActivityManager;
 
 public class MainActivity extends AppCompatActivity
@@ -16,12 +18,31 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checkAuthentication();
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setLifecycleOwner(this);
+
+        initialize();
+        viewModel.checkAuthentication();
     }
 
-    private void checkAuthentication()
+    private void initialize()
     {
-        // TODO: Authenticate user and save token to shared preferences
-        ActivityManager.redirectToActivity(this, LoginActivity.class);
+        // Initialize view model
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        binding.setViewModel(viewModel);
+
+        // Set observers
+        viewModel.getUserIsAuthenticated().observe(this, userIsAuthenticated ->
+        {
+            if(userIsAuthenticated)
+            {
+                ActivityManager.redirectToActivity(this, MainActivity.class);
+            }
+        });
+
+        // Set listeners
     }
+
+    private ActivityMainBinding binding;
+    private MainViewModel viewModel;
 }
