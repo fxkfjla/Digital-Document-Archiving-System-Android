@@ -7,7 +7,6 @@ import com.ddas.androidapp.network.api.ApiCallback;
 import com.ddas.androidapp.network.api.AuthService;
 import com.ddas.androidapp.network.server.model.ApiResponse;
 import com.ddas.androidapp.network.exception.ServerNoResponseException;
-import com.ddas.androidapp.network.server.model.Token;
 import com.ddas.androidapp.ui.login.LoginRequest;
 import com.ddas.androidapp.ui.register.RegisterRequest;
 
@@ -22,23 +21,23 @@ public class AuthManager
         authService = RetrofitClient.getInstance().create(AuthService.class);
     }
 
-    public void register(RegisterRequest user, ApiCallback<Token> callback)
+    public void register(RegisterRequest user, ApiCallback<String> callback)
     {
-        Call<ApiResponse<Token>> call = authService.register(user.getEmail(), user.getPassword(), user.getRePassword());
+        Call<ApiResponse<String>> call = authService.register(user.getEmail(), user.getPassword(), user.getRePassword());
 
         enqueue(call, callback);
     }
 
-    public void login(LoginRequest user, ApiCallback<Token> callback)
+    public void login(LoginRequest user, ApiCallback<String> callback)
     {
-        Call<ApiResponse<Token>> call = authService.login(user.getEmail(), user.getPassword());
+        Call<ApiResponse<String>> call = authService.login(user.getEmail(), user.getPassword());
 
         enqueue(call, callback);
     }
 
-    public void logout(Token token, ApiCallback<String> callback)
+    public void logout(String token, ApiCallback<String> callback)
     {
-        Call<ApiResponse<String>> call = authService.logout(token.getToken());
+        Call<ApiResponse<String>> call = authService.logout(token);
 
         enqueue(call, callback);
     }

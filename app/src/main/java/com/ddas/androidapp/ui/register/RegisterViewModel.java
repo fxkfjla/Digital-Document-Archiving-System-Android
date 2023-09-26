@@ -1,24 +1,31 @@
 package com.ddas.androidapp.ui.register;
 
+import android.app.Application;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.StringRes;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.ddas.androidapp.R;
+import com.ddas.androidapp.application.AppConstants;
 import com.ddas.androidapp.network.client.AuthManager;
+import com.ddas.androidapp.util.PreferencesManager;
 
-public class RegisterViewModel extends ViewModel
+public class RegisterViewModel extends AndroidViewModel
 {
-    public RegisterViewModel()
+    public RegisterViewModel(Application app)
     {
+        super(app);
+
         registerRequest = new MutableLiveData<>(new RegisterRequest());
         credentialsAreValid = new MutableLiveData<>();
         registrationIsSuccessful = new MutableLiveData<>();
         authManager = new AuthManager();
+        preferencesManager = new PreferencesManager(app, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
     }
 
     public void register()
@@ -29,6 +36,7 @@ public class RegisterViewModel extends ViewModel
 
             authManager.register(registerRequest.getValue(), response ->
             {
+                registrationIsSuccessful.setValue(true);
                 Log.d("DEVELOPMENT:RegisterViewModel", "register:success:" + response.getData());
             });
         }
@@ -80,4 +88,5 @@ public class RegisterViewModel extends ViewModel
     private final MutableLiveData<Boolean> credentialsAreValid;
     private final MutableLiveData<Boolean> registrationIsSuccessful;
     private final AuthManager authManager;
+    private final PreferencesManager preferencesManager;
 }

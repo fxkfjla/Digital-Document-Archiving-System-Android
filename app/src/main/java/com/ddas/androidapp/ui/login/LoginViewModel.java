@@ -1,29 +1,51 @@
 package com.ddas.androidapp.ui.login;
 
+import android.app.Application;
+import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.StringRes;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.ddas.androidapp.R;
+import com.ddas.androidapp.application.AppConstants;
+import com.ddas.androidapp.network.client.AuthManager;
+import com.ddas.androidapp.util.PreferencesManager;
 
-public class LoginViewModel extends ViewModel
+public class LoginViewModel extends AndroidViewModel
 {
-    public LoginViewModel()
+    public LoginViewModel(Application app)
     {
+        super(app);
+
         loginRequest = new MutableLiveData<>(new LoginRequest());
         credentialsAreValid = new MutableLiveData<>();
         loginStatus = new MutableLiveData<>();
+        authManager = new AuthManager();
+        preferencesManager = new PreferencesManager(app, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
     }
 
     public void login()
     {
-
         if(credentialsAreValid())
         {
             // TODO: Authorize user and change login status
+            authManager.login(loginRequest.getValue(), response ->
+            {
+                String token = response.getData();
+                String email = loginRequest.getValue().getEmail();
+
+                preferencesManager.putString(AppConstants.CURRENT_USER, email);
+                preferencesManager.putBoolean(AppConstants.USER_LOGGED_IN, true);
+                // Store received token in shared prefs under user's email
+                preferencesManager.putString(email, token);
+
+                loginStatus.setValue(true);
+                Log.d("DEVELOPMENT:LoginViewModel", "login:success:" + response.getData());
+            });
         }
 
         // TODO: PopupWindows when user is waiting for task execution
@@ -65,4 +87,6 @@ public class LoginViewModel extends ViewModel
     private final MutableLiveData<LoginRequest>  loginRequest;
     private final MutableLiveData<Boolean> credentialsAreValid;
     private final MutableLiveData<Boolean> loginStatus;
+    private final AuthManager authManager;
+    private final PreferencesManager preferencesManager;
 }

@@ -1,6 +1,5 @@
 package com.ddas.androidapp.network.api;
 
-import com.ddas.androidapp.network.server.model.Token;
 import com.ddas.androidapp.network.server.model.ApiResponse;
 
 import retrofit2.Call;
@@ -12,10 +11,10 @@ public interface AuthService
 {
     @FormUrlEncoded
     @POST("/api/v1/auth/register")
-    Call<ApiResponse<Token>> register(@Field("email") String email, @Field("password") String password, @Field("rePassword") String rePassword);
+    Call<ApiResponse<String>> register(@Field("email") String email, @Field("password") String password, @Field("rePassword") String rePassword);
     @FormUrlEncoded
     @POST("/api/v1/auth/login")
-    Call<ApiResponse<Token>> login(@Field("email") String email, @Field("password") String password);
+    Call<ApiResponse<String>> login(@Field("email") String email, @Field("password") String password);
     @FormUrlEncoded
     @POST("/api/v1/auth/logout")
     Call<ApiResponse<String>> logout(@Field("token") String token);
