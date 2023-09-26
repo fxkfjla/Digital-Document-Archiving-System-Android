@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.ddas.androidapp.R;
 import com.ddas.androidapp.databinding.ActivityLoginBinding;
-import com.ddas.androidapp.network.client.UserManager;
 import com.ddas.androidapp.ui.main.MainActivity;
 import com.ddas.androidapp.ui.register.RegisterActivity;
 import com.ddas.androidapp.util.ActivityManager;
@@ -25,9 +24,6 @@ public class LoginActivity extends AppCompatActivity
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         binding.setLifecycleOwner(this);
-
-        UserManager userManager = new UserManager();
-        userManager.findAll();
 
         initialize();
     }

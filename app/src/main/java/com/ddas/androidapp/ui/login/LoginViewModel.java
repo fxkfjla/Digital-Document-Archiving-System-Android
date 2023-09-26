@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.ddas.androidapp.R;
-import com.ddas.androidapp.util.CredentialsValidator;
 
 public class LoginViewModel extends ViewModel
 {
@@ -21,10 +20,8 @@ public class LoginViewModel extends ViewModel
 
     public void login()
     {
-        String email = loginRequest.getValue().getEmail();
-        String password = loginRequest.getValue().getPassword();
 
-        if(credentialsAreValid(email, password))
+        if(credentialsAreValid())
         {
             // TODO: Authorize user and change login status
         }
@@ -32,9 +29,12 @@ public class LoginViewModel extends ViewModel
         // TODO: PopupWindows when user is waiting for task execution
     }
 
-    private boolean credentialsAreValid(String email, String password)
+    private boolean credentialsAreValid()
     {
         // TODO: Make error messages more informative
+
+        String email = loginRequest.getValue().getEmail();
+        String password = loginRequest.getValue().getPassword();
 
         if(TextUtils.isEmpty(email))
         {
@@ -44,11 +44,6 @@ public class LoginViewModel extends ViewModel
         else if(TextUtils.isEmpty(password))
         {
             errorMessageResId = R.string.PASSWORD_IS_REQUIRED;
-            credentialsAreValid.setValue(false);
-        }
-        else if(!CredentialsValidator.emailIsValid(email))
-        {
-            errorMessageResId = R.string.EMAIL_IS_NOT_VALID;
             credentialsAreValid.setValue(false);
         }
         else
