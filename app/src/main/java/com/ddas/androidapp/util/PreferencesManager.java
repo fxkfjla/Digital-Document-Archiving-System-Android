@@ -51,5 +51,12 @@ public class PreferencesManager
         return preferences.getBoolean(name, false);
     }
 
+    public void clear()
+    {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
     private final SharedPreferences preferences;
 }

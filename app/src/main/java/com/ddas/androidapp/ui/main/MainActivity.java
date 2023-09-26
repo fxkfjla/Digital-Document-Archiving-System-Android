@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.ddas.androidapp.R;
 import com.ddas.androidapp.databinding.ActivityMainBinding;
+import com.ddas.androidapp.ui.login.LoginActivity;
 import com.ddas.androidapp.util.ActivityManager;
 
 public class MainActivity extends AppCompatActivity
@@ -34,13 +35,14 @@ public class MainActivity extends AppCompatActivity
         // Set observers
         viewModel.getUserIsAuthenticated().observe(this, userIsAuthenticated ->
         {
-            if(userIsAuthenticated)
+            if(!userIsAuthenticated)
             {
-                ActivityManager.redirectToActivity(this, MainActivity.class);
+                ActivityManager.redirectToActivity(this, LoginActivity.class);
             }
         });
 
         // Set listeners
+        binding.logoutButton.setOnClickListener(unused -> viewModel.logout());
     }
 
     private ActivityMainBinding binding;

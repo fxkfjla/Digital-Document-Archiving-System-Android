@@ -7,6 +7,7 @@
     <string name="NO_ACCOUNT">No account?</string>
     <string name="LOGIN_BUTTON_TEXT">Login</string>
     <string name="REGISTER_BUTTON_TEXT">Register</string>
+    <string name="LOGOUT_BUTTON_TEXT">Logout</string>
     <string name="EMAIL_IS_REQUIRED">Email is required</string>
     <string name="EMAIL_IS_NOT_VALID">Email is not valid</string>
     <string name="PASSWORD_IS_REQUIRED">Password is required</string>
