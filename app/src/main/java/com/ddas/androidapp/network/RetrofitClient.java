@@ -1,5 +1,7 @@
 package com.ddas.androidapp.network;
 
+import com.ddas.androidapp.application.AppConstants;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -10,7 +12,7 @@ public class RetrofitClient
         if(retrofit == null)
         {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(RetrofitConfig.BASE_URL)
+                    .baseUrl(AppConstants.API_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
