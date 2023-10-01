@@ -2,6 +2,7 @@ package com.ddas.androidapp.ui.main;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
@@ -17,7 +18,7 @@ public class MainViewModel extends AndroidViewModel
         super(app);
 
         userIsAuthenticated = new MutableLiveData<>(false);
-        authManager = new AuthManager();
+        authManager = new AuthManager(app);
         preferencesManager = new PreferencesManager(app, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
     }
 
@@ -33,13 +34,14 @@ public class MainViewModel extends AndroidViewModel
 
     public void logout()
     {
-        String email = preferencesManager.getString(AppConstants.CURRENT_USER);
-        String token = preferencesManager.getString(email);
+        String token = preferencesManager.getString(AppConstants.CURRENT_USER_TOKEN);
 
-        authManager.logout(token, response ->
+        authManager.logout(token, (response, statusCode) ->
         {
             preferencesManager.clear();
             userIsAuthenticated.setValue(false);
+
+            Log.d("DEVELOPMENT:MainViewModel", "register:" + response);
         });
     }
 

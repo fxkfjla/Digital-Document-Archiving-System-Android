@@ -4,5 +4,5 @@ import com.ddas.androidapp.network.server.model.ApiResponse;
 
 public interface ApiCallback<T>
 {
-    void onResponse(ApiResponse<T> apiResponse);
+    void onResponse(ApiResponse<T> apiResponse, int statusCode);
 }

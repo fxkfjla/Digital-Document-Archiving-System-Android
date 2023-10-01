@@ -1,24 +1,32 @@
 package com.ddas.androidapp.network.client;
 
-import android.util.Log;
+import android.content.Context;
 
 import com.ddas.androidapp.network.RetrofitClient;
 import com.ddas.androidapp.network.api.ApiCallback;
 import com.ddas.androidapp.network.api.AuthService;
 import com.ddas.androidapp.network.server.model.ApiResponse;
 import com.ddas.androidapp.network.exception.ServerNoResponseException;
+import com.ddas.androidapp.network.server.model.RetrofitErrorBody;
 import com.ddas.androidapp.ui.login.LoginRequest;
 import com.ddas.androidapp.ui.register.RegisterRequest;
 
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Converter;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class AuthManager
 {
-    public AuthManager()
+    public AuthManager(Context context)
     {
-        authService = RetrofitClient.getInstance().create(AuthService.class);
+        retrofit = RetrofitClient.getInstance(context);
+        authService = retrofit.create(AuthService.class);
     }
 
     public void register(RegisterRequest user, ApiCallback<String> callback)
@@ -50,22 +58,14 @@ public class AuthManager
             @Override
             public void onResponse(Call<ApiResponse<T>> call, Response<ApiResponse<T>> response)
             {
-                Log.d("DEVELOPMENT:AuthManager", "enqueue:onResponse:" + response.body());
-
                 if(response.isSuccessful())
                 {
-                    callback.onResponse(response.body());
+                    callback.onResponse(response.body(), response.code());
                 }
                 else
                 {
-                    try
-                    {
-                        Log.d("DEVELOPMENT:AuthManager", "enqueue:onResponse:" + response.errorBody().string());
-                    }
-                    catch(Exception e)
-                    {
-                        throw new RuntimeException(e);
-                    }
+                    ApiResponse<T> errorResponse = errorToApiResponse(response.errorBody());
+                    callback.onResponse(errorResponse, response.code());
                 }
             }
 
@@ -77,5 +77,29 @@ public class AuthManager
         });
     }
 
+    private <T> ApiResponse<T> errorToApiResponse(ResponseBody errorBody)
+    {
+        ApiResponse<T> errorResponse = new ApiResponse<>();
+
+        Converter<ResponseBody, RetrofitErrorBody> converter =
+                retrofit.responseBodyConverter(RetrofitErrorBody.class, new Annotation[0]);
+
+        try
+        {
+            RetrofitErrorBody error = converter.convert(errorBody);
+
+            errorResponse.setStatus(error.getStatus());
+            errorResponse.setPath(error.getPath());
+            errorResponse.setMessage(error.getMessage());
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return errorResponse;
+    }
+
+    private final Retrofit retrofit;
     private final AuthService authService;
 }

@@ -15,6 +15,8 @@ import com.ddas.androidapp.application.AppConstants;
 import com.ddas.androidapp.network.client.AuthManager;
 import com.ddas.androidapp.util.PreferencesManager;
 
+import java.net.HttpURLConnection;
+
 public class RegisterViewModel extends AndroidViewModel
 {
     public RegisterViewModel(Application app)
@@ -24,7 +26,7 @@ public class RegisterViewModel extends AndroidViewModel
         registerRequest = new MutableLiveData<>(new RegisterRequest());
         credentialsAreValid = new MutableLiveData<>();
         registrationIsSuccessful = new MutableLiveData<>();
-        authManager = new AuthManager();
+        authManager = new AuthManager(app);
         preferencesManager = new PreferencesManager(app, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
     }
 
@@ -34,10 +36,17 @@ public class RegisterViewModel extends AndroidViewModel
         {
             // TODO: Create user's account and set registration is successful flag
 
-            authManager.register(registerRequest.getValue(), response ->
+            authManager.register(registerRequest.getValue(), (response, statusCode) ->
             {
-                registrationIsSuccessful.setValue(true);
-                Log.d("DEVELOPMENT:RegisterViewModel", "register:success:" + response.getData());
+                if(statusCode == HttpURLConnection.HTTP_OK)
+                {
+                    registrationIsSuccessful.setValue(true);
+                    Log.d("DEVELOPMENT:RegisterViewModel", "register:success:" + response);
+                }
+                else
+                {
+                    Log.d("DEVELOPMENT:RegisterViewModel", "register:failure:" + response);
+                }
             });
         }
 

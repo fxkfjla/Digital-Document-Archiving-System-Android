@@ -14,9 +14,22 @@ public class ApiResponse<T>
     public void setMessage(String message) { this.message = message; }
     public void setTimestamp(String timestamp) { this.timestamp = timestamp; }
 
+    @Override
+    public String toString()
+    {
+        return "ApiResponse{" +
+                "status='" + status + '\'' +
+                ", path='" + path + '\'' +
+                ", data=" + data +
+                ", message='" + message + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
+    }
+
     private String status;
     private String path;
     private T data;
     private String message;
     private String timestamp;
+
 }

@@ -1,5 +1,6 @@
 package com.ddas.androidapp.application;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -9,6 +10,20 @@ import java.util.Locale;
 
 public class App extends Application
 {
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+
+        instance = this;
+        registerActivityLifecycleCallbacks(lifecycle);
+    }
+
+    public static Activity getCurrentActivity()
+    {
+        return instance.lifecycle.getCurrentActivity();
+    }
+
     @Override
     protected void attachBaseContext(Context base)
     {
@@ -49,4 +64,7 @@ public class App extends Application
 
         return context.createConfigurationContext(conf);
     }
+
+    private static App instance;
+    private final AppActivityLifecycle lifecycle = new AppActivityLifecycle();
 }

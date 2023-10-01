@@ -15,6 +15,8 @@ import com.ddas.androidapp.application.AppConstants;
 import com.ddas.androidapp.network.client.AuthManager;
 import com.ddas.androidapp.util.PreferencesManager;
 
+import java.net.HttpURLConnection;
+
 public class LoginViewModel extends AndroidViewModel
 {
     public LoginViewModel(Application app)
@@ -24,7 +26,7 @@ public class LoginViewModel extends AndroidViewModel
         loginRequest = new MutableLiveData<>(new LoginRequest());
         credentialsAreValid = new MutableLiveData<>();
         loginStatus = new MutableLiveData<>();
-        authManager = new AuthManager();
+        authManager = new AuthManager(app);
         preferencesManager = new PreferencesManager(app, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
     }
 
@@ -33,18 +35,24 @@ public class LoginViewModel extends AndroidViewModel
         if(credentialsAreValid())
         {
             // TODO: Authorize user and change login status
-            authManager.login(loginRequest.getValue(), response ->
+            authManager.login(loginRequest.getValue(), (response, statusCode) ->
             {
-                String token = response.getData();
-                String email = loginRequest.getValue().getEmail();
+                if(statusCode == HttpURLConnection.HTTP_OK)
+                {
+                    String token = response.getData();
+                    String email = loginRequest.getValue().getEmail();
 
-                preferencesManager.putString(AppConstants.CURRENT_USER, email);
-                preferencesManager.putBoolean(AppConstants.USER_LOGGED_IN, true);
-                // Store received token in shared prefs under user's email
-                preferencesManager.putString(email, token);
+                    preferencesManager.putString(AppConstants.CURRENT_USER_EMAIL, email);
+                    preferencesManager.putString(AppConstants.CURRENT_USER_TOKEN, token);
+                    preferencesManager.putBoolean(AppConstants.USER_LOGGED_IN, true);
 
-                loginStatus.setValue(true);
-                Log.d("DEVELOPMENT:LoginViewModel", "login:success:" + response.getData());
+                    loginStatus.setValue(true);
+                    Log.d("DEVELOPMENT:LoginViewModel", "login:success:" + response);
+                }
+                else
+                {
+                    Log.d("DEVELOPMENT:LoginViewModel", "login:failure:" + response);
+                }
             });
         }
 
