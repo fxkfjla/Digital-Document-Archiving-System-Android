@@ -22,16 +22,6 @@ public class MainViewModel extends AndroidViewModel
         preferencesManager = new PreferencesManager(app, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
     }
 
-    public void checkAuthentication()
-    {
-        boolean userIsLoggedIn = preferencesManager.getBoolean(AppConstants.USER_LOGGED_IN);
-
-        if(userIsLoggedIn)
-        {
-            userIsAuthenticated.setValue(true);
-        }
-    }
-
     public void logout()
     {
         String token = preferencesManager.getString(AppConstants.CURRENT_USER_TOKEN);
@@ -44,9 +34,6 @@ public class MainViewModel extends AndroidViewModel
             Log.d("DEVELOPMENT:MainViewModel", "register:" + response);
         });
     }
-
-    // Getters
-    public MutableLiveData<Boolean> getUserIsAuthenticated() { return userIsAuthenticated; }
 
     private final MutableLiveData<Boolean> userIsAuthenticated;
     private final PreferencesManager preferencesManager;
