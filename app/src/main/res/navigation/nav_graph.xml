@@ -13,6 +13,13 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_files"
+        android:name="com.ddas.androidapp.ui.main.fragment.FilesFragment"
+        android:label="FilesFragment"
+        tools:layout="@layout/fragment_files" >
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_user"
         android:name="com.ddas.androidapp.ui.main.fragment.UserFragment"
         android:label="UserFragment"
