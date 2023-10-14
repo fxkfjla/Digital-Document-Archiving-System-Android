@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
@@ -35,63 +34,70 @@ public class CameraActivity extends AppCompatActivity implements CameraConstants
     {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityCameraBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        initialize();
+        startCamera();
+    }
 
+    private void initialize()
+    {
+        // Initialize view model
         viewModel = new ViewModelProvider(this).get(CameraViewModel.class);
 
+        // Initialize binding
+        binding = ActivityCameraBinding.inflate(getLayoutInflater());
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
+        setContentView(binding.getRoot());
 
-        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-        {
-            requestPermissions(new String[]{ Manifest.permission.CAMERA }, CAMERA_REQUEST_CODE);
-        }
-
-        startCamera();
-        // TODO: check privileges before accessing the camera
-
+        // Set listeners
         binding.captureButton.setOnClickListener(unused -> takePhoto());
     }
 
     private void startCamera()
     {
-        cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-
-        cameraProviderFuture.addListener(() ->
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
         {
-            Preview preview = new Preview.Builder().build();
-            preview.setSurfaceProvider(binding.previewView.getSurfaceProvider());
+            requestPermissions(REQUIRED_PERMISSIONS, CAMERA_REQUEST_CODE);
+        }
 
-            imageCapture = new ImageCapture.Builder().build();
+        cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+        cameraProviderFuture.addListener(this::provideCamera, ContextCompat.getMainExecutor(this));
+    }
 
-            CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build();
+    private void provideCamera()
+    {
+        Preview preview = new Preview.Builder().build();
+        preview.setSurfaceProvider(binding.previewView.getSurfaceProvider());
 
-            try
-            {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                cameraProvider.unbindAll();
+        imageCapture = new ImageCapture.Builder().build();
 
-                Camera camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
-            }
-            catch (ExecutionException | InterruptedException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }, ContextCompat.getMainExecutor(this));
+        CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build();
+
+        try
+        {
+            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+            cameraProvider.unbindAll();
+
+            cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
+        }
+        catch (ExecutionException | InterruptedException e)
+        {
+            // TODO: handle exception
+            throw new RuntimeException(e);
+        }
     }
 
     private void takePhoto()
     {
-        String name = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(System.currentTimeMillis());
+        String name = new SimpleDateFormat(DATE_FORMAT, Locale.US).format(System.currentTimeMillis());
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
-        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_FORMAT);
 
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
         {
-            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image");
+            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, RELATIVE_PATH);
         }
 
         ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder
@@ -101,15 +107,18 @@ public class CameraActivity extends AppCompatActivity implements CameraConstants
             contentValues
         ).build();
 
-        imageCapture.takePicture(outputFileOptions, ContextCompat.getMainExecutor(this), new ImageCapture.OnImageSavedCallback() {
+        imageCapture.takePicture(outputFileOptions, ContextCompat.getMainExecutor(this), new ImageCapture.OnImageSavedCallback()
+        {
             @Override
-            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults)
+            {
                 Toast.makeText(getBaseContext(), "Photo capture succeeded! " + outputFileResults.getSavedUri(), Toast.LENGTH_SHORT).show();
                 Log.d("CameraX", "Photo saved: " + outputFileResults.getSavedUri());
             }
 
             @Override
-            public void onError(@NonNull ImageCaptureException exception) {
+            public void onError(@NonNull ImageCaptureException exception)
+            {
                 Toast.makeText(getBaseContext(), "Photo capture failed! " + exception.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("CameraX", "Error capturing photo: " + exception.getMessage());
             }
