@@ -64,7 +64,8 @@ public class EditFragment extends Fragment
         navController = Navigation.findNavController(view);
 
         // Set listeners
-        binding.saveButton.setOnClickListener(unused -> viewModel.savePhoto(executor));
+//        binding.saveButton.setOnClickListener(unused -> viewModel.savePhoto(executor));
+        binding.saveButton.setOnClickListener(unused -> viewModel.savePdf());
     }
 
     private void showPreview()

@@ -4,7 +4,10 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.widget.Toast;
@@ -18,6 +21,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -56,6 +64,7 @@ public class CameraViewModel extends AndroidViewModel implements CameraConstants
 
     public void savePhoto(Executor executor)
     {
+        // TODO: extract path setup and output file options
         String name = new SimpleDateFormat(DATE_FORMAT, Locale.US).format(System.currentTimeMillis());
 
         ContentValues contentValues = new ContentValues();
@@ -88,7 +97,87 @@ public class CameraViewModel extends AndroidViewModel implements CameraConstants
                 Toast.makeText(getApplication().getBaseContext(), "Photo capture failed! " + exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    public void savePdf()
+    {
+        Bitmap bitmap = getBitmapForPreview();
+
+        PdfDocument pdfDocument = new PdfDocument();
+
+        int bitmapWidth = bitmap.getWidth();
+        int bitmapHeight = bitmap.getHeight();
+
+        // Convert the pixel dimensions to points (1 inch = 72 points)
+        int pointsPerInch = 72;
+        int pageWidth = (int) (bitmapWidth / pointsPerInch);
+        int pageHeight = (int) (bitmapHeight / pointsPerInch);
+
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create();
+        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+
+        Canvas canvas = page.getCanvas();
+        canvas.drawBitmap(bitmap, null, new Rect(0, 0, pageInfo.getPageWidth(), pageInfo.getPageHeight()), null);
+
+        pdfDocument.finishPage(page);
+        // Specify the output file for the PDF
+
+        File path = new File(getApplication().getFilesDir(), "myfolder");
+        path.mkdirs();
+
+        File output = new File(path, "mypdf.pdf");
+
+        try {
+            OutputStream os = new FileOutputStream(output);
+            pdfDocument.writeTo(os);
+            pdfDocument.close();
+
+            // Now the PDF is saved to the app's private storage.
+            Toast.makeText(getApplication(), "PDF saved to " + output.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplication(), "Failed to save PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+//        String pdfFileName = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(System.currentTimeMillis()) + ".pdf";
+//
+//        // Get the app's private storage directory
+//        File storageDir = new File(getApplication().getFilesDir(), RELATIVE_PATH);
+//
+//        // Create the directory if it doesn't exist
+//        if (!storageDir.exists()) {
+//            storageDir.mkdirs();
+//        }
+//
+//        // Create a file for your PDF within the directory
+//        File pdfFile = new File(storageDir, pdfFileName);
+//
+//        try {
+//            OutputStream os = new FileOutputStream(pdfFile);
+//            pdfDocument.writeTo(os);
+//            pdfDocument.close();
+//
+//            // Now the PDF is saved to the app's private storage.
+//            Toast.makeText(getApplication(), "PDF saved to " + pdfFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(getApplication(), "Failed to save PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
+
+//        File pdfFile = new File(getApplication().getExternalFilesDir(null), "my_pdf.pdf");
+//        try {
+//            OutputStream os = new FileOutputStream(pdfFile);
+//            pdfDocument.writeTo(os);
+//            pdfDocument.close();
+//
+//            // Now the PDF is saved to the specified file.
+//            Toast.makeText(getApplication(), "PDF saved to " + pdfFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(getApplication(), "Failed to save PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
+//
+//        pdfDocument.close();
     }
 
     private Bitmap imageProxyToBitmap(ImageProxy image)
@@ -108,6 +197,11 @@ public class CameraViewModel extends AndroidViewModel implements CameraConstants
         matrix.postRotate(degrees);
 
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    private void convertToPdf()
+    {
+
     }
 
     // Getters, setters
