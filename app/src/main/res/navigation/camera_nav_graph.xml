@@ -1,0 +1,25 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_preview">
+
+    <fragment
+        android:id="@+id/navigation_preview"
+        android:name="com.ddas.androidapp.ui.camera.fragment.PreviewFragment"
+        android:label="PreviewFragment"
+        tools:layout="@layout/fragment_preview" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_edit"
+        android:name="com.ddas.androidapp.ui.camera.fragment.EditFragment"
+        android:label="EditFragment"
+        tools:layout="@layout/fragment_edit" >
+    </fragment>
+
+<!--    <action-->
+<!--        android:id="@+id/action_preview_to_edit"-->
+<!--        app:destination="@id/navigation_edit" />-->
+
+</navigation>

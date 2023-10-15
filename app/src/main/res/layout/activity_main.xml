@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_graph" />
+            app:navGraph="@navigation/main_nav_graph" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
