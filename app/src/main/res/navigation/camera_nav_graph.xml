@@ -18,8 +18,4 @@
         tools:layout="@layout/fragment_edit" >
     </fragment>
 
-<!--    <action-->
-<!--        android:id="@+id/action_preview_to_edit"-->
-<!--        app:destination="@id/navigation_edit" />-->
-
 </navigation>

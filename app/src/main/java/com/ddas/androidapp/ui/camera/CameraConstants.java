@@ -7,11 +7,6 @@ public interface CameraConstants
 {
     int CAMERA_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS = Build.VERSION.SDK_INT > Build.VERSION_CODES.P ?
-        new String[]{ Manifest.permission.CAMERA } :
+        new String[] { Manifest.permission.CAMERA } :
         new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE };
-
-    String DATE_FORMAT = "yyyyMMdd-HHmmss";
-    String PHOTO_FORMAT = "image/jpeg";
-    String RELATIVE_PATH = "Pictures/DDAS";
-
 }

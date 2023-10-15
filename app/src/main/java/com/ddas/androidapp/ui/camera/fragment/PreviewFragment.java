@@ -45,7 +45,7 @@ public class PreviewFragment extends Fragment
     public void onDestroyView()
     {
         super.onDestroyView();
-        binding = null;
+//        binding = null;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class PreviewFragment extends Fragment
         navController = Navigation.findNavController(view);
 
         // Set listeners
-        binding.captureButton.setOnClickListener(unused -> viewModel.capturePhoto(executor));
+        binding.captureButton.setOnClickListener(unused -> viewModel.capturePicture(executor));
 
         // Set observers
         viewModel.getImageBitmap().observe(context, imageBitmap -> navController.navigate(R.id.navigation_edit));

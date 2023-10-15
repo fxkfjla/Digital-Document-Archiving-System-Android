@@ -19,6 +19,7 @@ import com.ddas.androidapp.databinding.FragmentFilesBinding;
 import com.ddas.androidapp.ui.camera.CameraActivity;
 import com.ddas.androidapp.ui.main.MainViewModel;
 import com.ddas.androidapp.util.ActivityManager;
+import com.ddas.androidapp.util.FileManager;
 
 import java.io.File;
 
@@ -52,6 +53,7 @@ public class FilesFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         initialize();
+//        FileManager.openPdf(requireActivity(), "mypdf");
         getPdf();
     }
 
@@ -61,60 +63,35 @@ public class FilesFragment extends Fragment
         binding.scanButton.setOnClickListener(unused -> ActivityManager.openNewActivity(getActivity(), CameraActivity.class));
     }
 
-    private void getPdf() {
-        String filePath = "/data/user/0/com.ddas.androidapp/files/myfolder/mypdf.pdf";
+    private void getPdf()
+    {
+        String filePath = "/data/user/0/com.ddas.androidapp/files/Scans/mypdf.pdf";
 
-        // Log the file path for debugging
-        Log.d("MyApp", "File Path: " + filePath);
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
         File file = new File(filePath);
 
-        if (file.exists()) {
-            // Log the file existence
-            Log.d("MyApp", "File exists.");
+        if (file.exists())
+        {
+            Uri uri = FileProvider.getUriForFile(getActivity(), "com.ddas.androidapp.provider", file);
 
-            // Use your FileProvider authority here
-            Uri uri = FileProvider.getUriForFile(requireActivity(), "com.ddas.androidapp.provider", file);
-
-            // Log the generated URI for debugging
-            Log.d("MyApp", "URI: " + uri.toString());
-
+            Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(uri, "application/pdf");
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-            try {
+            try
+            {
                 startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                // Handle or log the ActivityNotFoundException
-                Log.e("MyApp", "Activity not found to open PDF: " + e.getMessage());
             }
-        } else {
-            // Log that the file doesn't exist
-            Log.e("MyApp", "File does not exist.");
+            catch (ActivityNotFoundException e)
+            {
+
+            }
+        }
+        else
+        {
+
         }
     }
 
-//    private void getPdf()
-//    {
-//        String filePath = "/data/user/0/com.ddas.androidapp/files/myfolder/mypdf.pdf";
-//
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        File file = new File(filePath);
-//        Uri uri = FileProvider.getUriForFile(requireActivity(), "com.ddas.androidapp.provider", file);
-//
-//        intent.setDataAndType(uri, "application/pdf");
-//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-//        try {
-//            startActivity(intent);
-//        }catch (ActivityNotFoundException e)
-//        {
-//
-//        }
-//    }
-
     private FragmentFilesBinding binding;
     private MainViewModel viewModel;
-
 }

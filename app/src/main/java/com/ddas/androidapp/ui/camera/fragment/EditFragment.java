@@ -16,6 +16,8 @@ import androidx.navigation.Navigation;
 
 import com.ddas.androidapp.databinding.FragmentEditBinding;
 import com.ddas.androidapp.ui.camera.CameraViewModel;
+import com.ddas.androidapp.ui.main.MainActivity;
+import com.ddas.androidapp.util.ActivityManager;
 
 import java.util.concurrent.Executor;
 
@@ -40,7 +42,7 @@ public class EditFragment extends Fragment
     public void onDestroyView()
     {
         super.onDestroyView();
-        binding = null;
+//        binding = null;
     }
 
     @Override
@@ -64,8 +66,11 @@ public class EditFragment extends Fragment
         navController = Navigation.findNavController(view);
 
         // Set listeners
-//        binding.saveButton.setOnClickListener(unused -> viewModel.savePhoto(executor));
-        binding.saveButton.setOnClickListener(unused -> viewModel.savePdf());
+        binding.saveButton.setOnClickListener(unused ->
+        {
+            viewModel.saveToPdf();
+            ActivityManager.redirectToActivity(context, MainActivity.class);
+        });
     }
 
     private void showPreview()
