@@ -7,7 +7,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.ddas.androidapp.R;
 import com.ddas.androidapp.databinding.ActivityMainBinding;
@@ -20,13 +19,14 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
+        // Initialize ViewModel
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
+        // Initialize binding
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
+        setContentView(binding.getRoot());
 
         initialize();
     }
@@ -38,12 +38,6 @@ public class MainActivity extends AppCompatActivity
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(navView, navController);
-
-        Log.d("DEVELOPMENT:MainActivity", "onCreate:success:" + navController.getCurrentDestination());
-
-        // Set observers
-
-        // Set listeners
     }
 
     private ActivityMainBinding binding;

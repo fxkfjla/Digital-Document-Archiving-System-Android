@@ -20,13 +20,14 @@ public class LoginActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
+        // Initialize ViewModel
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
+        // Initialize binding
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
+        setContentView(binding.getRoot());
 
         initialize();
     }

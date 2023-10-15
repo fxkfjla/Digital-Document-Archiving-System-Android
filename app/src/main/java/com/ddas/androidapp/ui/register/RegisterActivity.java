@@ -19,13 +19,14 @@ public class RegisterActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityRegisterBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
+        // Initialize ViewModel
         viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
 
+        // Initialize binding
+        binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
+        setContentView(binding.getRoot());
 
         initialize();
     }

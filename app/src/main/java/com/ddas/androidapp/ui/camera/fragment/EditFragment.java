@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.ddas.androidapp.R;
 import com.ddas.androidapp.databinding.FragmentEditBinding;
 import com.ddas.androidapp.ui.camera.CameraViewModel;
 
@@ -66,9 +65,6 @@ public class EditFragment extends Fragment
 
         // Set listeners
         binding.saveButton.setOnClickListener(unused -> viewModel.savePhoto(executor));
-//
-//        // Set observers
-//        viewModel.getImageBitmap().observe(context, imageBitmap -> navController.navigate(R.id.navigation_edit));
     }
 
     private void showPreview()

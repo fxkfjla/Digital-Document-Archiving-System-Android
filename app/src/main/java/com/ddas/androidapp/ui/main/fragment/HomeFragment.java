@@ -19,14 +19,22 @@ public class HomeFragment extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        // Initialize ViewModel
+        viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+
+        // Initialize binding
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        binding = null;
     }
 
     private FragmentHomeBinding binding;
