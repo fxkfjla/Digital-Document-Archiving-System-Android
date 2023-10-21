@@ -69,7 +69,7 @@ public class EditFragment extends Fragment
         binding.saveButton.setOnClickListener(unused ->
         {
             viewModel.saveToPdf();
-            ActivityManager.redirectToActivity(context, MainActivity.class);
+            context.finish();
         });
     }
 

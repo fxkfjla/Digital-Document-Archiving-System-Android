@@ -1,5 +1,10 @@
 package com.ddas.androidapp.util;
 
+import static com.ddas.androidapp.util.FileManagerConstants.FILE_PREFIX;
+import static com.ddas.androidapp.util.FileManagerConstants.PDFS_FOLDER;
+import static com.ddas.androidapp.util.FileManagerConstants.PDF_FORMAT;
+import static com.ddas.androidapp.util.FileManagerConstants.PROVIDER_AUTHORITY;
+
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -15,18 +20,37 @@ import android.widget.Toast;
 import androidx.camera.core.ImageProxy;
 import androidx.core.content.FileProvider;
 
+import com.ddas.androidapp.ui.main.fragment.list.FileModel;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-public class FileManager implements FileManagerConstants
+public class FileManager
 {
+    public static List<FileModel> getFileList(Context context)
+    {
+        String directoryPath = context.getFilesDir() + "/" + PDFS_FOLDER;
+
+        File[] files = new File(directoryPath).listFiles();
+
+        List<FileModel> fileList = new ArrayList<>();
+
+        Arrays.stream(Optional.ofNullable(files).orElse(new File[]{}))
+                .forEach(file -> fileList.add(new FileModel(file.getName(), file.getPath())));
+
+        return fileList;
+    }
+
     public static void openPdf(Context context, String name)
     {
-        String filePath = context.getFilesDir() + "/files/" + PDFS_FOLDER + "/" + name;
-
+        String filePath = context.getFilesDir() + "/" + PDFS_FOLDER + "/" + name;
         File file = new File(filePath);
 
         if (file.exists())
@@ -46,26 +70,21 @@ public class FileManager implements FileManagerConstants
 
             }
         }
-        else
-        {
-
-        }
     }
 
-    public static void saveBitmapToPdf(Context context, Bitmap bitmap)
+    public static void saveBitmapToPdf(Context context, Bitmap bitmap, String name)
     {
-        File path = new File(context.getFilesDir(), PDFS_FOLDER);
-        path.mkdirs();
+        String directoryPath = context.getFilesDir() + "/" + PDFS_FOLDER;
+        String filePath = directoryPath + "/" + FILE_PREFIX + name + ".pdf";
 
-//        File output = new File(path, System.currentTimeMillis() + ".pdf");
-        File output = new File(path,"mypdf.pdf");
+        new File(directoryPath).mkdirs();
+        File output = new File(filePath);
 
         try
         {
             OutputStream os = new FileOutputStream(output);
 
             PdfDocument pdf = convertBitmapToPdf(bitmap);
-
             pdf.writeTo(os);
             pdf.close();
 

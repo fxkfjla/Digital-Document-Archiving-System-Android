@@ -47,7 +47,7 @@ public class CameraViewModel extends AndroidViewModel implements CameraConstants
 
     public void saveToPdf()
     {
-        FileManager.saveBitmapToPdf(getApplication(), imageBitmap.getValue());
+        FileManager.saveBitmapToPdf(getApplication(), imageBitmap.getValue(), String.valueOf(System.currentTimeMillis()));
     }
 
     // Getters, setters
