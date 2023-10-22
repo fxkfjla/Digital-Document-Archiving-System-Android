@@ -17,15 +17,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:padding="8dp">
 
             <TextView
                 android:id="@+id/textViewFileName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="353dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/itemSelected"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:contentDescription="Selected item"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/ic_item_selected_foreground" />
 
         </LinearLayout>
 

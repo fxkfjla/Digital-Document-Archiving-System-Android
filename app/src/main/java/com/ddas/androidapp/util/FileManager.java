@@ -34,6 +34,18 @@ import java.util.Optional;
 
 public class FileManager
 {
+    public static void deleteFromFileList(List<FileModel> selectedFiles)
+    {
+        selectedFiles.forEach(file -> deletefile(file.getFilePath()));
+    }
+
+    public static boolean deletefile(String filePath)
+    {
+        File file = new File(filePath);
+
+        return file.delete();
+    }
+
     public static List<FileModel> getFileList(Context context)
     {
         String directoryPath = context.getFilesDir() + "/" + PDFS_FOLDER;
@@ -43,7 +55,7 @@ public class FileManager
         List<FileModel> fileList = new ArrayList<>();
 
         Arrays.stream(Optional.ofNullable(files).orElse(new File[]{}))
-                .forEach(file -> fileList.add(new FileModel(file.getName(), file.getPath())));
+                .forEach(file -> fileList.add(new FileModel(file.getName(), file.getPath(), "")));
 
         return fileList;
     }
