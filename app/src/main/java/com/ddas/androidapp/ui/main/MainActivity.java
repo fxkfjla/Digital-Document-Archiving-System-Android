@@ -1,15 +1,16 @@
 package com.ddas.androidapp.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 
 import com.ddas.androidapp.R;
 import com.ddas.androidapp.databinding.ActivityMainBinding;
-import com.ddas.androidapp.ui.login.LoginActivity;
-import com.ddas.androidapp.util.ActivityManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -17,32 +18,26 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        // Initialize ViewModel
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+        // Initialize binding
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
+        setContentView(binding.getRoot());
 
         initialize();
-        viewModel.checkAuthentication();
     }
 
     private void initialize()
     {
-        // Initialize view model
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        binding.setViewModel(viewModel);
-
-        // Set observers
-        viewModel.getUserIsAuthenticated().observe(this, userIsAuthenticated ->
-        {
-            if(!userIsAuthenticated)
-            {
-                ActivityManager.redirectToActivity(this, LoginActivity.class);
-            }
-        });
-
-        // Set listeners
-        binding.logoutButton.setOnClickListener(unused -> viewModel.logout());
+        // Initialize nav bar
+        BottomNavigationView navView = binding.bottomNavigationView;
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment.getNavController();
+        NavigationUI.setupWithNavController(navView, navController);
     }
 
     private ActivityMainBinding binding;

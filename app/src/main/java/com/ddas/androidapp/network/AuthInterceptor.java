@@ -1,13 +1,12 @@
 package com.ddas.androidapp.network;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.ddas.androidapp.application.App;
 import com.ddas.androidapp.application.AppConstants;
-import com.ddas.androidapp.ui.login.LoginActivity;
+import com.ddas.androidapp.ui.main.MainActivity;
 import com.ddas.androidapp.util.ActivityManager;
 import com.ddas.androidapp.util.PreferencesManager;
 
@@ -23,7 +22,6 @@ public class AuthInterceptor implements Interceptor
     public AuthInterceptor(Context context)
     {
         preferencesManager = new PreferencesManager(context, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
-        this.context = context;
     }
 
     @NonNull
@@ -44,14 +42,12 @@ public class AuthInterceptor implements Interceptor
         if(res.code() == HttpURLConnection.HTTP_UNAUTHORIZED)
         {
             // TODO: Log user out immediately after token expiration
-            Log.d("DEVELOPMENT:authInterceptor", "intercept:success:activity:" + App.getCurrentActivity());
             preferencesManager.clear();
-            ActivityManager.redirectToActivity(App.getCurrentActivity(), LoginActivity.class);
+            ActivityManager.redirectToActivity(App.getCurrentActivity(), MainActivity.class);
         }
 
         return res;
     }
 
     private final PreferencesManager preferencesManager;
-    private final Context context;
 }

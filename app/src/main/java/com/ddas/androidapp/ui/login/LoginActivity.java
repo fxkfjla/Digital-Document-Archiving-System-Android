@@ -6,10 +6,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.ddas.androidapp.R;
 import com.ddas.androidapp.databinding.ActivityLoginBinding;
 import com.ddas.androidapp.ui.main.MainActivity;
 import com.ddas.androidapp.ui.register.RegisterActivity;
@@ -22,18 +20,20 @@ public class LoginActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
+        // Initialize ViewModel
+        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+
+        // Initialize binding
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
+        setContentView(binding.getRoot());
 
         initialize();
     }
 
     private void initialize()
     {
-        // Initialize view model
-        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        binding.setViewModel(viewModel);
-
         // Set observers
         viewModel.getLoginStatus().observe(this, loginStatus ->
         {
@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity
         });
 
         // Set listeners
-        binding.loginRedirectRegister.setOnClickListener(unused -> ActivityManager.redirectToActivity(this, RegisterActivity.class));
+        binding.loginRedirectRegister.setOnClickListener(unused -> ActivityManager.openNewActivity(this, RegisterActivity.class));
         binding.loginButton.setOnClickListener(unused -> viewModel.login());
     }
 
