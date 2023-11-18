@@ -4,16 +4,19 @@ import android.content.Context;
 
 import com.ddas.androidapp.network.RetrofitClient;
 import com.ddas.androidapp.network.api.ApiCallback;
-import com.ddas.androidapp.network.api.AuthService;
-import com.ddas.androidapp.network.server.model.ApiResponse;
+import com.ddas.androidapp.network.api.FileService;
 import com.ddas.androidapp.network.exception.ServerNoResponseException;
+import com.ddas.androidapp.network.server.model.ApiResponse;
 import com.ddas.androidapp.network.server.model.RetrofitErrorBody;
-import com.ddas.androidapp.ui.login.LoginRequest;
-import com.ddas.androidapp.ui.register.RegisterRequest;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,33 +24,24 @@ import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class AuthManager
+public class FileManagerApi
 {
-    public AuthManager(Context context)
+    public FileManagerApi(Context context)
     {
         retrofit = RetrofitClient.getInstance(context);
-        authService = retrofit.create(AuthService.class);
+        fileService = retrofit.create(FileService.class);
     }
 
-    public void register(RegisterRequest user, ApiCallback<String> callback)
+    public void upload(List<File> files, ApiCallback<String> callback)
     {
-        Call<ApiResponse<String>> call = authService.register(user.getEmail(), user.getPassword(), user.getRePassword());
+        for(File file : files)
+        {
+            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), RequestBody.create(file, MediaType.parse("multipart/form-data")));
 
-        enqueue(call, callback);
-    }
+            Call<ApiResponse<String>> call = fileService.upload(filePart, file.getName());
 
-    public void login(LoginRequest user, ApiCallback<String> callback)
-    {
-        Call<ApiResponse<String>> call = authService.login(user.getEmail(), user.getPassword());
-
-        enqueue(call, callback);
-    }
-
-    public void logout(String token, ApiCallback<String> callback)
-    {
-        Call<ApiResponse<String>> call = authService.logout(token);
-
-        enqueue(call, callback);
+            enqueue(call, callback);
+        }
     }
 
     private <T> void enqueue(Call<ApiResponse<T>> call, ApiCallback<T> callback)
@@ -101,5 +95,5 @@ public class AuthManager
     }
 
     private final Retrofit retrofit;
-    private final AuthService authService;
+    private final FileService fileService;
 }

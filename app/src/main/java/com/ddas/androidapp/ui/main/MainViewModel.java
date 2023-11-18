@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ddas.androidapp.application.AppConstants;
-import com.ddas.androidapp.network.client.AuthManager;
+import com.ddas.androidapp.network.client.AuthManagerApi;
 import com.ddas.androidapp.util.PreferencesManager;
 
 public class MainViewModel extends AndroidViewModel
@@ -18,7 +18,7 @@ public class MainViewModel extends AndroidViewModel
         super(app);
 
         userIsAuthenticated = new MutableLiveData<>(false);
-        authManager = new AuthManager(app);
+        authManagerApi = new AuthManagerApi(app);
         preferencesManager = new PreferencesManager(app, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
     }
 
@@ -26,7 +26,7 @@ public class MainViewModel extends AndroidViewModel
     {
         String token = preferencesManager.getString(AppConstants.CURRENT_USER_TOKEN);
 
-        authManager.logout(token, (response, statusCode) ->
+        authManagerApi.logout(token, (response, statusCode) ->
         {
             preferencesManager.clear();
             userIsAuthenticated.setValue(false);
@@ -37,5 +37,5 @@ public class MainViewModel extends AndroidViewModel
 
     private final MutableLiveData<Boolean> userIsAuthenticated;
     private final PreferencesManager preferencesManager;
-    private final AuthManager authManager;
+    private final AuthManagerApi authManagerApi;
 }

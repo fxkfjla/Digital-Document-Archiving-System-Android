@@ -46,6 +46,15 @@ public class FileManager
         return file.delete();
     }
 
+    public static List<File> getSelectedFiles(List<FileModel> selectedFiles)
+    {
+        List<File> files = new ArrayList<>();
+
+        selectedFiles.forEach(file -> files.add(new File(file.getFilePath())));
+
+        return files;
+    }
+
     public static List<FileModel> getFileList(Context context)
     {
         String directoryPath = context.getFilesDir() + "/" + PDFS_FOLDER;

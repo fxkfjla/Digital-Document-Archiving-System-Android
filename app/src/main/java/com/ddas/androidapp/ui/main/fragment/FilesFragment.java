@@ -66,7 +66,11 @@ public class FilesFragment extends Fragment
     {
         super.onResume();
 
-        showTopMenu(false);
+        if(topMenu != null)
+        {
+            showTopMenu(false);
+        }
+
         loadFileList(FileManager.getFileList(requireActivity()));
     }
 

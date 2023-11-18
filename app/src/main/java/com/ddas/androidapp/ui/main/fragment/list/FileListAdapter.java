@@ -1,18 +1,24 @@
 package com.ddas.androidapp.ui.main.fragment.list;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ddas.androidapp.R;
+import com.ddas.androidapp.application.App;
+import com.ddas.androidapp.network.client.FileManagerApi;
 import com.ddas.androidapp.util.FileManager;
 
+import java.io.File;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +63,20 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     public void shareSelected()
     {
+        List<File> files = FileManager.getSelectedFiles(selectedFiles);
+        fileManagerApi.upload(files, (response, statusCode) ->
+        {
+            if(statusCode == HttpURLConnection.HTTP_OK)
+            {
+                Log.d("DEVELOPMENT:FileListAdapter", "upload:success:" + response);
+                Toast.makeText(App.getCurrentActivity(), "Files uploaded!", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Log.d("DEVELOPMENT:FileListAdapter", "upload:failure:" + response);
+                Toast.makeText(App.getCurrentActivity(), "Failed to upload files!", Toast.LENGTH_SHORT).show();
+            }
+        });
         enableSelectMode(false);
         notifyDataSetChanged();
     }
@@ -142,6 +162,8 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
             selectedFiles.clear();
         }
     }
+
+    private static final FileManagerApi fileManagerApi = new FileManagerApi(App.getCurrentActivity());
 
     private List<FileModel> fileModelList;
 

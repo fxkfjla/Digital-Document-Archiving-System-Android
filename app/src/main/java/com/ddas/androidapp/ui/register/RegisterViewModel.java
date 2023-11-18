@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.lifecycle.AndroidViewModel;
@@ -11,8 +12,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ddas.androidapp.R;
+import com.ddas.androidapp.application.App;
 import com.ddas.androidapp.application.AppConstants;
-import com.ddas.androidapp.network.client.AuthManager;
+import com.ddas.androidapp.network.client.AuthManagerApi;
 import com.ddas.androidapp.util.PreferencesManager;
 
 import java.net.HttpURLConnection;
@@ -26,7 +28,7 @@ public class RegisterViewModel extends AndroidViewModel
         registerRequest = new MutableLiveData<>(new RegisterRequest());
         credentialsAreValid = new MutableLiveData<>();
         registrationIsSuccessful = new MutableLiveData<>();
-        authManager = new AuthManager(app);
+        authManagerApi = new AuthManagerApi(app);
         preferencesManager = new PreferencesManager(app, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
     }
 
@@ -36,16 +38,15 @@ public class RegisterViewModel extends AndroidViewModel
         {
             // TODO: Create user's account and set registration is successful flag
 
-            authManager.register(registerRequest.getValue(), (response, statusCode) ->
+            authManagerApi.register(registerRequest.getValue(), (response, statusCode) ->
             {
                 if(statusCode == HttpURLConnection.HTTP_OK)
                 {
                     registrationIsSuccessful.setValue(true);
-                    Log.d("DEVELOPMENT:RegisterViewModel", "register:success:" + response);
                 }
                 else
                 {
-                    Log.d("DEVELOPMENT:RegisterViewModel", "register:failure:" + response);
+                    Toast.makeText(App.getCurrentActivity(), response.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -96,6 +97,6 @@ public class RegisterViewModel extends AndroidViewModel
     private final MutableLiveData<RegisterRequest> registerRequest;
     private final MutableLiveData<Boolean> credentialsAreValid;
     private final MutableLiveData<Boolean> registrationIsSuccessful;
-    private final AuthManager authManager;
+    private final AuthManagerApi authManagerApi;
     private final PreferencesManager preferencesManager;
 }
