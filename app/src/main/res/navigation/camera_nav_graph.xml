@@ -12,10 +12,17 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_save"
+        android:name="com.ddas.androidapp.ui.camera.fragment.SaveFragment"
+        android:label="SaveFragment"
+        tools:layout="@layout/fragment_edit" >
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_edit"
         android:name="com.ddas.androidapp.ui.camera.fragment.EditFragment"
         android:label="EditFragment"
-        tools:layout="@layout/fragment_edit" >
+        tools:layout="@layout/fragment_edit_file" >
     </fragment>
 
 </navigation>

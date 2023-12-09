@@ -2,6 +2,8 @@ package com.ddas.androidapp.network.api;
 
 import com.ddas.androidapp.network.server.model.ApiResponse;
 
+import java.util.List;
+
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -15,5 +17,11 @@ public interface FileService
 {
     @Multipart
     @POST("/api/v1/file/upload")
-    Call<ApiResponse<String>> upload(@Part MultipartBody.Part file, @Query("name") String name);
+    Call<ApiResponse<String>> upload
+    (
+        @Part MultipartBody.Part file,
+        @Query("name") String name,
+        @Query("description") String description,
+        @Query("tags") List<String> tags
+    );
 }

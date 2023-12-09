@@ -1,6 +1,5 @@
 package com.ddas.androidapp.util;
 
-import static com.ddas.androidapp.util.FileManagerConstants.FILE_PREFIX;
 import static com.ddas.androidapp.util.FileManagerConstants.PDFS_FOLDER;
 import static com.ddas.androidapp.util.FileManagerConstants.PDF_FORMAT;
 import static com.ddas.androidapp.util.FileManagerConstants.PROVIDER_AUTHORITY;
@@ -28,14 +27,49 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class FileManager
 {
+    private static final List<FileModel> fileList = new ArrayList<>();
+
+    private static String selectedFileToEditPath;
+
+    public static void setSelectedFileToEdit(String selectedFileToEditPath)
+    {
+        FileManager.selectedFileToEditPath = selectedFileToEditPath;
+    }
+
+    public static FileModel getSelectedFileToEdit()
+    {
+        return fileList.stream()
+        .filter(fileModel -> fileModel.getFilePath().equals(selectedFileToEditPath))
+        .findFirst()
+        .get();
+    }
+
+    public static void updateSelectedFile(FileModel file)
+    {
+//        FileModel fileModel = fileList.stream().filter(_fileModel -> _fileModel.equals(file)).findFirst().get();
+        fileList.remove(file);
+        fileList.add(file);
+
+//        fileList.stream()
+//        .filter(fileModel -> fileModel.getFilePath().equals(selectedFileToEditPath))
+//        .findFirst()
+//        .get();
+//        fileList.stream()
+//        .filter(fileModel -> fileModel.getFilePath().equals(file.getFilePath()))
+//        .findFirst().(fileModel -> {
+//            fileModel.setName(file.getName());
+//                fileModel.setName(file.getName());
+//                fileModel.setName(file.getName());
+//                });
+    }
+
     public static void deleteFromFileList(List<FileModel> selectedFiles)
     {
+        fileList.removeAll(selectedFiles);
         selectedFiles.forEach(file -> deletefile(file.getFilePath()));
     }
 
@@ -46,32 +80,14 @@ public class FileManager
         return file.delete();
     }
 
-    public static List<File> getSelectedFiles(List<FileModel> selectedFiles)
+    public static List<FileModel> getFileList()
     {
-        List<File> files = new ArrayList<>();
-
-        selectedFiles.forEach(file -> files.add(new File(file.getFilePath())));
-
-        return files;
-    }
-
-    public static List<FileModel> getFileList(Context context)
-    {
-        String directoryPath = context.getFilesDir() + "/" + PDFS_FOLDER;
-
-        File[] files = new File(directoryPath).listFiles();
-
-        List<FileModel> fileList = new ArrayList<>();
-
-        Arrays.stream(Optional.ofNullable(files).orElse(new File[]{}))
-                .forEach(file -> fileList.add(new FileModel(file.getName(), file.getPath(), "")));
-
         return fileList;
     }
 
     public static void openPdf(Context context, String name)
     {
-        String filePath = context.getFilesDir() + "/" + PDFS_FOLDER + "/" + name;
+        String filePath = context.getFilesDir() + "/" + PDFS_FOLDER + "/" + name + ".pdf";
         File file = new File(filePath);
 
         if (file.exists())
@@ -93,13 +109,15 @@ public class FileManager
         }
     }
 
-    public static void saveBitmapToPdf(Context context, Bitmap bitmap, String name)
+    public static void saveBitmapToPdf(Context context, Bitmap bitmap, String name, String description, String tags)
     {
         String directoryPath = context.getFilesDir() + "/" + PDFS_FOLDER;
-        String filePath = directoryPath + "/" + FILE_PREFIX + name + ".pdf";
+        String filePath = directoryPath + "/" + name + ".pdf";
 
         new File(directoryPath).mkdirs();
         File output = new File(filePath);
+
+        fileList.add(new FileModel(name, filePath, description, tags));
 
         try
         {
@@ -131,22 +149,6 @@ public class FileManager
 
         return pdfDocument;
 
-    }
-
-    public static PdfDocument convertImageToPdf(ImageProxy image)
-    {
-        PdfDocument pdfDocument = new PdfDocument();
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(image.getWidth(), image.getHeight(), 1).create();
-        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
-
-        Bitmap bitmap = convertImageToBitmap(image);
-
-        Canvas canvas = page.getCanvas();
-        canvas.drawBitmap(bitmap, null, new Rect(0, 0, pageInfo.getPageWidth(), pageInfo.getPageHeight()), null);
-
-        pdfDocument.finishPage(page);
-
-        return pdfDocument;
     }
 
     public static Bitmap convertImageToBitmap(ImageProxy image)

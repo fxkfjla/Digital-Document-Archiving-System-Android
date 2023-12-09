@@ -8,10 +8,12 @@ import com.ddas.androidapp.network.api.FileService;
 import com.ddas.androidapp.network.exception.ServerNoResponseException;
 import com.ddas.androidapp.network.server.model.ApiResponse;
 import com.ddas.androidapp.network.server.model.RetrofitErrorBody;
+import com.ddas.androidapp.ui.main.fragment.list.FileModel;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -32,13 +34,16 @@ public class FileManagerApi
         fileService = retrofit.create(FileService.class);
     }
 
-    public void upload(List<File> files, ApiCallback<String> callback)
+    public void upload(List<FileModel> files, ApiCallback<String> callback)
     {
-        for(File file : files)
+        for(FileModel file : files)
         {
-            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), RequestBody.create(file, MediaType.parse("multipart/form-data")));
+            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(),
+                    RequestBody.create(new File(file.getFilePath()), MediaType.parse("multipart/form-data")));
 
-            Call<ApiResponse<String>> call = fileService.upload(filePart, file.getName());
+            List<String> tags = Arrays.asList(file.getTags().trim().split(","));
+
+            Call<ApiResponse<String>> call = fileService.upload(filePart, file.getName(), file.getDescription(), tags);
 
             enqueue(call, callback);
         }

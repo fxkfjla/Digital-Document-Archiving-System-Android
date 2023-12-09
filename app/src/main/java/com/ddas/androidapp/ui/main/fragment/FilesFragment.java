@@ -71,7 +71,7 @@ public class FilesFragment extends Fragment
             showTopMenu(false);
         }
 
-        loadFileList(FileManager.getFileList(requireActivity()));
+        loadFileList(FileManager.getFileList());
     }
 
     private void initialize()
@@ -109,12 +109,17 @@ public class FilesFragment extends Fragment
             {
                 if(item.getItemId() == R.id.delete_selected)
                 {
-                    loadFileList(adapter.deleteSelected());
+                    adapter.deleteSelected();
+                    loadFileList(FileManager.getFileList());
 
                 }
                 else if(item.getItemId() == R.id.share_selected)
                 {
                     adapter.shareSelected();
+                }
+                else if(item.getItemId() == R.id.edit_selected)
+                {
+                    adapter.editSelected();
                 }
 
                 return false;
@@ -126,6 +131,7 @@ public class FilesFragment extends Fragment
     {
         topMenu.findItem(R.id.delete_selected).setVisible(show);
         topMenu.findItem(R.id.share_selected).setVisible(show);
+        topMenu.findItem(R.id.edit_selected).setVisible(show);
     }
 
     private FragmentFilesBinding binding;
