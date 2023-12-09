@@ -7,6 +7,7 @@ import com.ddas.androidapp.network.api.ApiCallback;
 import com.ddas.androidapp.network.api.AuthService;
 import com.ddas.androidapp.network.api.model.LoginDTO;
 import com.ddas.androidapp.network.api.model.RegisterDTO;
+import com.ddas.androidapp.network.api.model.TokenDTO;
 import com.ddas.androidapp.network.server.model.ApiResponse;
 import com.ddas.androidapp.network.exception.ServerNoResponseException;
 import com.ddas.androidapp.network.server.model.RetrofitErrorBody;
@@ -49,7 +50,7 @@ public class AuthManagerApi
 
     public void logout(String token, ApiCallback<String> callback)
     {
-        Call<ApiResponse<String>> call = authService.logout(token);
+        Call<ApiResponse<String>> call = authService.logout(new TokenDTO(token));
 
         enqueue(call, callback);
     }
@@ -76,7 +77,7 @@ public class AuthManagerApi
             @Override
             public void onFailure(Call<ApiResponse<T>> call, Throwable t)
             {
-                throw new ServerNoResponseException("No response from server!" + t);
+                throw new ServerNoResponseException("Brak odpowiedzi od serwera!" + t);
             }
         });
     }

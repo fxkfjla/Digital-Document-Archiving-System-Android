@@ -52,7 +52,7 @@ public class LoginViewModel extends AndroidViewModel
                 }
                 else
                 {
-                    Toast.makeText(App.getCurrentActivity(), "User not found!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(App.getCurrentActivity(), "Nie znaleziono użytkownika!", Toast.LENGTH_SHORT).show();
                 }
             });
         }

@@ -2,6 +2,7 @@ package com.ddas.androidapp.network.api;
 
 import com.ddas.androidapp.network.api.model.LoginDTO;
 import com.ddas.androidapp.network.api.model.RegisterDTO;
+import com.ddas.androidapp.network.api.model.TokenDTO;
 import com.ddas.androidapp.network.server.model.ApiResponse;
 
 import retrofit2.Call;
@@ -16,9 +17,6 @@ public interface AuthService
     Call<ApiResponse<String>> register(@Body RegisterDTO request);
     @POST("/api/v1/auth/login")
     Call<ApiResponse<String>> login(@Body LoginDTO request);
-
-    // TODO: podmienic parametr na request body
-    @FormUrlEncoded
     @POST("/api/v1/auth/logout")
-    Call<ApiResponse<String>> logout(@Field("token") String token);
+    Call<ApiResponse<String>> logout(@Body TokenDTO token);
 }

@@ -20,6 +20,8 @@ public class MainViewModel extends AndroidViewModel
         userIsAuthenticated = new MutableLiveData<>(false);
         authManagerApi = new AuthManagerApi(app);
         preferencesManager = new PreferencesManager(app, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
+
+        userIsAuthenticated.setValue(preferencesManager.getBoolean(AppConstants.USER_LOGGED_IN));
     }
 
     public void logout()
@@ -33,6 +35,11 @@ public class MainViewModel extends AndroidViewModel
 
             Log.d("DEVELOPMENT:MainViewModel", "register:" + response);
         });
+    }
+
+    public MutableLiveData<Boolean> getUserIsAuthenticated()
+    {
+        return userIsAuthenticated;
     }
 
     private final MutableLiveData<Boolean> userIsAuthenticated;

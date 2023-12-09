@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.ddas.androidapp.application.App;
 import com.ddas.androidapp.databinding.FragmentUserBinding;
 import com.ddas.androidapp.ui.login.LoginActivity;
 import com.ddas.androidapp.ui.main.MainViewModel;
@@ -49,8 +50,20 @@ public class UserFragment extends Fragment
 
     private void initialize()
     {
-        // Set listeners
-        binding.loginButton.setOnClickListener(unused -> ActivityManager.openNewActivity(getActivity(), LoginActivity.class));
+        // Set observers
+        viewModel.getUserIsAuthenticated().observe(requireActivity(), userIsAuthenticated ->
+        {
+            if(userIsAuthenticated)
+            {
+                binding.loginButton.setText("Wyloguj");
+                binding.loginButton.setOnClickListener(unused ->viewModel.logout());
+            }
+            else
+            {
+                binding.loginButton.setText("Zaloguj");
+                binding.loginButton.setOnClickListener(unused -> ActivityManager.openNewActivity(getActivity(), LoginActivity.class));
+            }
+        });
     }
 
 
