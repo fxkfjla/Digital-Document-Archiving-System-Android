@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Photo Archive</string>
+    <string name="app_name">Document Archive</string>
     <string name="ENTER_EMAIL">Email</string>
     <string name="ENTER_PASSWORD">Password</string>
     <string name="ENTER_RE_PASSWORD">Repeat Password</string>

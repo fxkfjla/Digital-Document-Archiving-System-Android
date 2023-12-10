@@ -16,9 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ddas.androidapp.R;
 import com.ddas.androidapp.application.App;
+import com.ddas.androidapp.application.AppConstants;
 import com.ddas.androidapp.network.client.FileManagerApi;
 import com.ddas.androidapp.util.ActivityManager;
 import com.ddas.androidapp.util.FileManager;
+import com.ddas.androidapp.util.PreferencesManager;
 
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -27,10 +29,11 @@ import java.util.List;
 
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder>
 {
-    public FileListAdapter(List<FileModel> fileModelList, ShowTopMenu showTopMenu)
+    public FileListAdapter(List<FileModel> fileModelList, ShowTopMenu showTopMenu, PreferencesManager preferencesManager)
     {
         this.fileModelList = fileModelList;
         this.showTopMenu = showTopMenu;
+        this.preferencesManager = preferencesManager;
     }
 
     @NonNull
@@ -64,19 +67,29 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     public void shareSelected()
     {
-        fileManagerApi.upload(selectedFiles, (response, statusCode) ->
+        boolean isUserLoggedIn = preferencesManager.getBoolean(AppConstants.USER_LOGGED_IN);
+
+        if(isUserLoggedIn)
         {
-            if(statusCode == HttpURLConnection.HTTP_OK)
-            {
-                Log.d("DEVELOPMENT:FileListAdapter", "upload:success:" + response);
-                Toast.makeText(App.getCurrentActivity(), "Pliki przesłane!", Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
-                Log.d("DEVELOPMENT:FileListAdapter", "upload:failure:" + response);
-                Toast.makeText(App.getCurrentActivity(), "Nie udało sie przesłać plików!", Toast.LENGTH_SHORT).show();
-            }
-        });
+           fileManagerApi.upload(selectedFiles, (response, statusCode) ->
+           {
+               if(statusCode == HttpURLConnection.HTTP_OK)
+               {
+                   Log.d("DEVELOPMENT:FileListAdapter", "upload:success:" + response);
+                   Toast.makeText(App.getCurrentActivity(), "Pliki przesłane!", Toast.LENGTH_SHORT).show();
+               }
+               else
+               {
+                   Log.d("DEVELOPMENT:FileListAdapter", "upload:failure:" + response);
+                   Toast.makeText(App.getCurrentActivity(), "Nie udało sie przesłać plików!", Toast.LENGTH_SHORT).show();
+               }
+            });
+        }
+        else
+        {
+            Toast.makeText(App.getCurrentActivity(), "Zaloguj się aby wysłać pliki!", Toast.LENGTH_SHORT).show();
+        }
+
         enableSelectMode(false);
         notifyDataSetChanged();
     }
@@ -184,4 +197,5 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     private List<FileModel> selectedFiles = new ArrayList<>();
     private boolean isInSelectMode = false;
     private ShowTopMenu showTopMenu;
+    private final PreferencesManager preferencesManager;
 }

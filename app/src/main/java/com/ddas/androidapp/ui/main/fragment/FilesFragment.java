@@ -1,5 +1,6 @@
 package com.ddas.androidapp.ui.main.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.ddas.androidapp.R;
+import com.ddas.androidapp.application.AppConstants;
 import com.ddas.androidapp.databinding.FragmentFilesBinding;
 import com.ddas.androidapp.ui.camera.CameraActivity;
 import com.ddas.androidapp.ui.main.MainViewModel;
@@ -24,6 +26,7 @@ import com.ddas.androidapp.ui.main.fragment.list.FileListAdapter;
 import com.ddas.androidapp.ui.main.fragment.list.FileModel;
 import com.ddas.androidapp.util.ActivityManager;
 import com.ddas.androidapp.util.FileManager;
+import com.ddas.androidapp.util.PreferencesManager;
 
 import java.util.List;
 import java.util.zip.Inflater;
@@ -41,6 +44,8 @@ public class FilesFragment extends Fragment
         binding = FragmentFilesBinding.inflate(inflater, container, false);
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
+
+        preferencesManager = new PreferencesManager(requireActivity(), AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
 
         return binding.getRoot();
     }
@@ -87,7 +92,7 @@ public class FilesFragment extends Fragment
     {
         this.fileList = fileList;
 
-        adapter = new FileListAdapter(fileList, this::showTopMenu);
+        adapter = new FileListAdapter(fileList, this::showTopMenu, preferencesManager);
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -141,4 +146,5 @@ public class FilesFragment extends Fragment
     private FileListAdapter adapter;
     private MenuProvider menuProvider;
     private Menu topMenu;
+    private PreferencesManager preferencesManager;
 }

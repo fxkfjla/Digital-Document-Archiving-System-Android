@@ -44,10 +44,10 @@ public class AuthInterceptor implements Interceptor
 
         if(res.code() == HttpURLConnection.HTTP_UNAUTHORIZED)
         {
-            showToastOnMainThread("Zaloguj się aby wysłać pliki!");
-
-            preferencesManager.clear();
-            ActivityManager.redirectToActivity(App.getCurrentActivity(), MainActivity.class);
+//            showToastOnMainThread("Zaloguj się aby wykonać tę akcję!");
+//
+//            preferencesManager.clear();
+//            ActivityManager.redirectToActivity(App.getCurrentActivity(), MainActivity.class);
         }
 
         return res;

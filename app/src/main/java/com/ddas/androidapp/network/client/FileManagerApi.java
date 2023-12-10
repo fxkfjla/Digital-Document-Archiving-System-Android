@@ -71,7 +71,7 @@ public class FileManagerApi
             @Override
             public void onFailure(Call<ApiResponse<T>> call, Throwable t)
             {
-                throw new ServerNoResponseException("No response from server!" + t);
+                throw new ServerNoResponseException("Brak odpowiedzi od serwera!" + t);
             }
         });
     }

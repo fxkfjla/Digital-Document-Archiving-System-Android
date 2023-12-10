@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
@@ -18,6 +19,8 @@ import com.ddas.androidapp.network.client.AuthManagerApi;
 import com.ddas.androidapp.util.PreferencesManager;
 
 import java.net.HttpURLConnection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterViewModel extends AndroidViewModel
 {
@@ -36,8 +39,6 @@ public class RegisterViewModel extends AndroidViewModel
     {
         if(credentialsAreValid())
         {
-            // TODO: Create user's account and set registration is successful flag
-
             authManagerApi.register(registerRequest.getValue(), (response, statusCode) ->
             {
                 if(statusCode == HttpURLConnection.HTTP_OK)
@@ -78,12 +79,36 @@ public class RegisterViewModel extends AndroidViewModel
             errorMessageResId = R.string.REPEAT_THE_PASSWORD;
             credentialsAreValid.setValue(false);
         }
+        else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+        {
+            errorMessageResId = R.string.EMAIL_IS_NOT_VALID;
+            credentialsAreValid.setValue(false);
+        }
+        else if(!isPasswordValid(password))
+        {
+            errorMessageResId = R.string.PASSWORD_IS_NOT_VALID;
+            credentialsAreValid.setValue(false);
+        }
+        else if(!password.equals(rePassword))
+        {
+            errorMessageResId = R.string.PASSWORDS_NOT_MATCH;
+            credentialsAreValid.setValue(false);
+        }
         else
         {
             credentialsAreValid.setValue(true);
         }
 
         return credentialsAreValid.getValue();
+    }
+
+    private boolean isPasswordValid(String password)
+    {
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+
+        return matcher.matches();
     }
 
     // Getters
