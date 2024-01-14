@@ -1,6 +1,9 @@
 package com.ddas.androidapp.network;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -22,6 +25,7 @@ public class AuthInterceptor implements Interceptor
     public AuthInterceptor(Context context)
     {
         preferencesManager = new PreferencesManager(context, AppConstants.PREFS_FILE_NAME, Context.MODE_PRIVATE);
+        handler = new Handler(Looper.getMainLooper());
     }
 
     @NonNull
@@ -38,16 +42,22 @@ public class AuthInterceptor implements Interceptor
 
         Response res = chain.proceed(req);
 
-
         if(res.code() == HttpURLConnection.HTTP_UNAUTHORIZED)
         {
-            // TODO: Log user out immediately after token expiration
-            preferencesManager.clear();
-            ActivityManager.redirectToActivity(App.getCurrentActivity(), MainActivity.class);
+//            showToastOnMainThread("Zaloguj się aby wykonać tę akcję!");
+//
+//            preferencesManager.clear();
+//            ActivityManager.redirectToActivity(App.getCurrentActivity(), MainActivity.class);
         }
 
         return res;
     }
 
+    private void showToastOnMainThread(final String message)
+    {
+        handler.post(() -> Toast.makeText(App.getCurrentActivity(), message, Toast.LENGTH_SHORT).show());
+    }
+
+    private final Handler handler;
     private final PreferencesManager preferencesManager;
 }

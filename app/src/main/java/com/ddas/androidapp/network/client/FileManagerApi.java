@@ -1,19 +1,26 @@
 package com.ddas.androidapp.network.client;
 
 import android.content.Context;
+import android.widget.Toast;
 
+import com.ddas.androidapp.application.App;
 import com.ddas.androidapp.network.RetrofitClient;
 import com.ddas.androidapp.network.api.ApiCallback;
-import com.ddas.androidapp.network.api.AuthService;
-import com.ddas.androidapp.network.server.model.ApiResponse;
+import com.ddas.androidapp.network.api.FileService;
 import com.ddas.androidapp.network.exception.ServerNoResponseException;
+import com.ddas.androidapp.network.server.model.ApiResponse;
 import com.ddas.androidapp.network.server.model.RetrofitErrorBody;
-import com.ddas.androidapp.ui.login.LoginRequest;
-import com.ddas.androidapp.ui.register.RegisterRequest;
+import com.ddas.androidapp.ui.main.fragment.list.FileModel;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,33 +28,27 @@ import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class AuthManager
+public class FileManagerApi
 {
-    public AuthManager(Context context)
+    public FileManagerApi(Context context)
     {
         retrofit = RetrofitClient.getInstance(context);
-        authService = retrofit.create(AuthService.class);
+        fileService = retrofit.create(FileService.class);
     }
 
-    public void register(RegisterRequest user, ApiCallback<String> callback)
+    public void upload(List<FileModel> files, ApiCallback<String> callback)
     {
-        Call<ApiResponse<String>> call = authService.register(user.getEmail(), user.getPassword(), user.getRePassword());
+        for(FileModel file : files)
+        {
+            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(),
+                    RequestBody.create(new File(file.getFilePath()), MediaType.parse("multipart/form-data")));
 
-        enqueue(call, callback);
-    }
+            List<String> tags = Arrays.asList(file.getTags().trim().split(","));
 
-    public void login(LoginRequest user, ApiCallback<String> callback)
-    {
-        Call<ApiResponse<String>> call = authService.login(user.getEmail(), user.getPassword());
+            Call<ApiResponse<String>> call = fileService.upload(filePart, file.getName(), file.getDescription(), tags);
 
-        enqueue(call, callback);
-    }
-
-    public void logout(String token, ApiCallback<String> callback)
-    {
-        Call<ApiResponse<String>> call = authService.logout(token);
-
-        enqueue(call, callback);
+            enqueue(call, callback);
+        }
     }
 
     private <T> void enqueue(Call<ApiResponse<T>> call, ApiCallback<T> callback)
@@ -72,7 +73,7 @@ public class AuthManager
             @Override
             public void onFailure(Call<ApiResponse<T>> call, Throwable t)
             {
-                throw new ServerNoResponseException("No response from server!" + t);
+                Toast.makeText(App.getCurrentActivity(), "Brak odpowiedzi od serwera!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -101,5 +102,5 @@ public class AuthManager
     }
 
     private final Retrofit retrofit;
-    private final AuthService authService;
+    private final FileService fileService;
 }

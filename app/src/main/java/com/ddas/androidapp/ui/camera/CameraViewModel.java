@@ -32,7 +32,6 @@ public class CameraViewModel extends AndroidViewModel implements CameraConstants
             public void onCaptureSuccess(@NonNull ImageProxy imageProxy)
             {
                 imageBitmap.setValue(FileManager.convertImageToBitmap(imageProxy));
-                Toast.makeText(getApplication().getBaseContext(), "Photo capture succeeded!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -45,9 +44,9 @@ public class CameraViewModel extends AndroidViewModel implements CameraConstants
         });
     }
 
-    public void saveToPdf()
+    public void saveToPdf(String name, String description, String tags)
     {
-        FileManager.saveBitmapToPdf(getApplication(), imageBitmap.getValue(), String.valueOf(System.currentTimeMillis()));
+        FileManager.saveBitmapToPdf(getApplication(), imageBitmap.getValue(), name, description, tags);
     }
 
     // Getters, setters

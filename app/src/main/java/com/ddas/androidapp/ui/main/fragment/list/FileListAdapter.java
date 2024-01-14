@@ -1,27 +1,39 @@
 package com.ddas.androidapp.ui.main.fragment.list;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ddas.androidapp.R;
+import com.ddas.androidapp.application.App;
+import com.ddas.androidapp.application.AppConstants;
+import com.ddas.androidapp.network.client.FileManagerApi;
+import com.ddas.androidapp.util.ActivityManager;
 import com.ddas.androidapp.util.FileManager;
+import com.ddas.androidapp.util.PreferencesManager;
 
+import java.io.File;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder>
 {
-    public FileListAdapter(List<FileModel> fileModelList, ShowTopMenu showTopMenu)
+    public FileListAdapter(List<FileModel> fileModelList, ShowTopMenu showTopMenu, PreferencesManager preferencesManager)
     {
         this.fileModelList = fileModelList;
         this.showTopMenu = showTopMenu;
+        this.preferencesManager = preferencesManager;
     }
 
     @NonNull
@@ -45,20 +57,55 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         return fileModelList.size();
     }
 
-    public List<FileModel> deleteSelected()
+    public void deleteSelected()
     {
         FileManager.deleteFromFileList(selectedFiles);
         fileModelList.removeAll(selectedFiles);
 
         enableSelectMode(false);
-
-        return fileModelList;
     }
 
     public void shareSelected()
     {
+        boolean isUserLoggedIn = preferencesManager.getBoolean(AppConstants.USER_LOGGED_IN);
+
+        if(isUserLoggedIn)
+        {
+           fileManagerApi.upload(selectedFiles, (response, statusCode) ->
+           {
+               if(statusCode == HttpURLConnection.HTTP_OK)
+               {
+                   Log.d("DEVELOPMENT:FileListAdapter", "upload:success:" + response);
+                   Toast.makeText(App.getCurrentActivity(), "Pliki przesłane!", Toast.LENGTH_SHORT).show();
+               }
+               else
+               {
+                   Log.d("DEVELOPMENT:FileListAdapter", "upload:failure:" + response);
+                   Toast.makeText(App.getCurrentActivity(), "Nie udało sie przesłać plików!", Toast.LENGTH_SHORT).show();
+               }
+            });
+        }
+        else
+        {
+            Toast.makeText(App.getCurrentActivity(), "Zaloguj się aby wysłać pliki!", Toast.LENGTH_SHORT).show();
+        }
+
         enableSelectMode(false);
         notifyDataSetChanged();
+    }
+
+    public void editSelected()
+    {
+        if(selectedFiles.size() == 1)
+        {
+            FileModel selectedFile = selectedFiles.get(0);
+            FileManager.setSelectedFileToEdit(selectedFile.getFilePath());
+            ActivityManager.openNewActivity(App.getCurrentActivity(), EditFileActivity.class);
+        }
+        else
+        {
+            Toast.makeText(App.getCurrentActivity(), "Możesz edytować tylko jeden plik na raz!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void toggleFileSelect(FileModel item, ImageView itemSelected)
@@ -143,9 +190,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         }
     }
 
+    private static final FileManagerApi fileManagerApi = new FileManagerApi(App.getCurrentActivity());
+
     private List<FileModel> fileModelList;
 
     private List<FileModel> selectedFiles = new ArrayList<>();
     private boolean isInSelectMode = false;
     private ShowTopMenu showTopMenu;
+    private final PreferencesManager preferencesManager;
 }

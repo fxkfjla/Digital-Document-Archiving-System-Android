@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidApp</string>
+    <string name="app_name">Document Archive</string>
     <string name="ENTER_EMAIL">Email</string>
     <string name="ENTER_PASSWORD">Password</string>
     <string name="ENTER_RE_PASSWORD">Repeat Password</string>
@@ -8,10 +8,10 @@
     <string name="LOGIN_BUTTON_TEXT">Login</string>
     <string name="REGISTER_BUTTON_TEXT">Register</string>
     <string name="LOGOUT_BUTTON_TEXT">Logout</string>
-    <string name="EMAIL_IS_REQUIRED">Email is required</string>
-    <string name="EMAIL_IS_NOT_VALID">Email is not valid</string>
-    <string name="PASSWORD_IS_REQUIRED">Password is required</string>
-    <string name="PASSWORD_IS_NOT_VALID">Password is not valid</string>
-    <string name="REPEAT_THE_PASSWORD">Repeat the password</string>
-    <string name="PASSWORDS_NOT_MATCH">Passwords do not match</string>
+    <string name="EMAIL_IS_REQUIRED">Podaj email</string>
+    <string name="EMAIL_IS_NOT_VALID">Email nie jest poprawny</string>
+    <string name="PASSWORD_IS_REQUIRED">Podaj hasło</string>
+    <string name="PASSWORD_IS_NOT_VALID">Hasło nie jest poprawne</string>
+    <string name="REPEAT_THE_PASSWORD">Powtórz hasło</string>
+    <string name="PASSWORDS_NOT_MATCH">Hasła się nie zgadzają</string>
 </resources>

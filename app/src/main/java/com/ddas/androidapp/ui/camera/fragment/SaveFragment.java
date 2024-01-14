@@ -14,12 +14,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.ddas.androidapp.databinding.FragmentEditFileBinding;
+import com.ddas.androidapp.R;
+import com.ddas.androidapp.databinding.FragmentEditBinding;
 import com.ddas.androidapp.ui.camera.CameraViewModel;
 
 import java.util.concurrent.Executor;
 
-public class EditFragment extends Fragment
+public class SaveFragment extends Fragment
 {
     @Nullable
     @Override
@@ -29,7 +30,7 @@ public class EditFragment extends Fragment
         viewModel = new ViewModelProvider(requireActivity()).get(CameraViewModel.class);
 
         // Initialize binding
-        binding = FragmentEditFileBinding.inflate(inflater, container, false);
+        binding = FragmentEditBinding.inflate(inflater, container, false);
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
 
@@ -48,6 +49,7 @@ public class EditFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         initialize(view);
+        showPreview();
     }
 
     private void initialize(View view)
@@ -62,18 +64,15 @@ public class EditFragment extends Fragment
         navController = Navigation.findNavController(view);
 
         // Set listeners
-        binding.saveButton.setOnClickListener(unused ->
-        {
-            String name = binding.editTextName.getText().toString();
-            String description = binding.editTextDescription.getText().toString();
-            String tags = binding.editTextTags.getText().toString();
-
-            viewModel.saveToPdf(name, description, tags);
-            context.finish();
-        });
+        binding.saveButton.setOnClickListener(unused -> navController.navigate(R.id.navigation_edit));
     }
 
-    private FragmentEditFileBinding binding;
+    private void showPreview()
+    {
+        binding.imageViewPreview.setImageBitmap(viewModel.getBitmapForPreview());
+    }
+
+    private FragmentEditBinding binding;
     private CameraViewModel viewModel;
     private FragmentActivity context;
     private Executor executor;

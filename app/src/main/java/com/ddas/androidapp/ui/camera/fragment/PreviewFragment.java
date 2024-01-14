@@ -69,10 +69,15 @@ public class PreviewFragment extends Fragment
         navController = Navigation.findNavController(view);
 
         // Set listeners
-        binding.captureButton.setOnClickListener(unused -> viewModel.capturePicture(executor));
+        binding.captureButton.setOnClickListener(unused -> {
+            // Set observer for only one callback
+            viewModel.getImageBitmap().observe(context, bitmap -> {
+                navController.navigate(R.id.navigation_save);
+                viewModel.getImageBitmap().removeObservers(context);
+            });
 
-        // Set observers
-        viewModel.getImageBitmap().observe(context, imageBitmap -> navController.navigate(R.id.navigation_edit));
+            viewModel.capturePicture(executor);
+        });
     }
 
     private void startCamera()
