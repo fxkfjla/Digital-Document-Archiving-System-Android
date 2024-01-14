@@ -61,6 +61,14 @@ public class LoginActivity extends AppCompatActivity
         binding.loginButton.setOnClickListener(unused -> viewModel.login());
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        this.finish();
+        ActivityManager.redirectToActivity(this, MainActivity.class);
+    }
+
     private ActivityLoginBinding binding;
     private LoginViewModel viewModel;
 }

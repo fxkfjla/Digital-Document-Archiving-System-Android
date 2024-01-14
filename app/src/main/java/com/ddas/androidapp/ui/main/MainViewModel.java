@@ -37,6 +37,11 @@ public class MainViewModel extends AndroidViewModel
         });
     }
 
+    public String getUserEmail()
+    {
+        return preferencesManager.getString(AppConstants.CURRENT_USER_EMAIL);
+    }
+
     public MutableLiveData<Boolean> getUserIsAuthenticated()
     {
         return userIsAuthenticated;

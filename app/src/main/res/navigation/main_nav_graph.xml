@@ -4,12 +4,12 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/navigation_files">
 
-    <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.ddas.androidapp.ui.main.fragment.HomeFragment"
-        android:label="HomeFragment"
-        tools:layout="@layout/fragment_home" >
-    </fragment>
+<!--    <fragment-->
+<!--        android:id="@+id/navigation_home"-->
+<!--        android:name="com.ddas.androidapp.ui.main.fragment.HomeFragment"-->
+<!--        android:label="HomeFragment"-->
+<!--        tools:layout="@layout/fragment_home" >-->
+<!--    </fragment>-->
 
     <fragment
         android:id="@+id/navigation_files"

@@ -32,7 +32,6 @@ public class CameraViewModel extends AndroidViewModel implements CameraConstants
             public void onCaptureSuccess(@NonNull ImageProxy imageProxy)
             {
                 imageBitmap.setValue(FileManager.convertImageToBitmap(imageProxy));
-                Toast.makeText(getApplication().getBaseContext(), "Photo capture succeeded!", Toast.LENGTH_SHORT).show();
             }
 
             @Override

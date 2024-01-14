@@ -20,18 +20,22 @@ public class EditFileActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_edit_file);
 
-        findViewById(R.id.saveButton).setOnClickListener(view -> {
-            String name = ((TextView) findViewById(R.id.editTextName)).getText().toString();
-            String description = ((TextView) findViewById(R.id.editTextDescription)).getText().toString();
-            String tags = ((TextView) findViewById(R.id.editTextTags)).getText().toString();
+        FileModel fileModel = FileManager.getSelectedFileToEdit();
+        TextView editName = findViewById(R.id.editTextName);
+        TextView editDescription = findViewById(R.id.editTextDescription);
+        TextView editTags = findViewById(R.id.editTextTags);
 
-            FileModel fileModel = FileManager.getSelectedFileToEdit();
-            fileModel.setName(name);
-            fileModel.setDescription(description);
-            fileModel.setTags(tags);
+        editName.setText(fileModel.getName());
+        editDescription.setText(fileModel.getDescription());
+        editTags.setText(fileModel.getTags());
+
+        findViewById(R.id.saveButton).setOnClickListener(view -> {
+            fileModel.setName(editName.getText().toString());
+            fileModel.setDescription(editDescription.getText().toString());
+            fileModel.setTags(editTags.getText().toString());
 
             FileManager.updateSelectedFile(fileModel);
-            ActivityManager.redirectToActivity(this, MainActivity.class);
+            finish();
         });
     }
 }

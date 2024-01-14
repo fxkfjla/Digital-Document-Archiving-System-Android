@@ -1,7 +1,9 @@
 package com.ddas.androidapp.network.client;
 
 import android.content.Context;
+import android.widget.Toast;
 
+import com.ddas.androidapp.application.App;
 import com.ddas.androidapp.network.RetrofitClient;
 import com.ddas.androidapp.network.api.ApiCallback;
 import com.ddas.androidapp.network.api.FileService;
@@ -71,7 +73,7 @@ public class FileManagerApi
             @Override
             public void onFailure(Call<ApiResponse<T>> call, Throwable t)
             {
-                throw new ServerNoResponseException("Brak odpowiedzi od serwera!" + t);
+                Toast.makeText(App.getCurrentActivity(), "Brak odpowiedzi od serwera!", Toast.LENGTH_SHORT).show();
             }
         });
     }

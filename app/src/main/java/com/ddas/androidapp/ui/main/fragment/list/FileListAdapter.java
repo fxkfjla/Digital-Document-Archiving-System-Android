@@ -100,7 +100,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         {
             FileModel selectedFile = selectedFiles.get(0);
             FileManager.setSelectedFileToEdit(selectedFile.getFilePath());
-            ActivityManager.redirectToActivity(App.getCurrentActivity(), EditFileActivity.class);
+            ActivityManager.openNewActivity(App.getCurrentActivity(), EditFileActivity.class);
         }
         else
         {

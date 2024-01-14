@@ -55,13 +55,15 @@ public class UserFragment extends Fragment
         {
             if(userIsAuthenticated)
             {
-                binding.loginButton.setText("Wyloguj");
-                binding.loginButton.setOnClickListener(unused ->viewModel.logout());
+                binding.logoutButton.setVisibility(View.VISIBLE);
+                binding.logoImageView.setVisibility(View.VISIBLE);
+                binding.userEmailTextView.setText(viewModel.getUserEmail());
+                binding.userEmailTextView.setVisibility(View.VISIBLE);
+                binding.logoutButton.setOnClickListener(unused ->viewModel.logout());
             }
             else
             {
-                binding.loginButton.setText("Zaloguj");
-                binding.loginButton.setOnClickListener(unused -> ActivityManager.openNewActivity(getActivity(), LoginActivity.class));
+                ActivityManager.redirectToActivity(getActivity(), LoginActivity.class);
             }
         });
     }

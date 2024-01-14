@@ -50,21 +50,8 @@ public class FileManager
 
     public static void updateSelectedFile(FileModel file)
     {
-//        FileModel fileModel = fileList.stream().filter(_fileModel -> _fileModel.equals(file)).findFirst().get();
         fileList.remove(file);
         fileList.add(file);
-
-//        fileList.stream()
-//        .filter(fileModel -> fileModel.getFilePath().equals(selectedFileToEditPath))
-//        .findFirst()
-//        .get();
-//        fileList.stream()
-//        .filter(fileModel -> fileModel.getFilePath().equals(file.getFilePath()))
-//        .findFirst().(fileModel -> {
-//            fileModel.setName(file.getName());
-//                fileModel.setName(file.getName());
-//                fileModel.setName(file.getName());
-//                });
     }
 
     public static void deleteFromFileList(List<FileModel> selectedFiles)
@@ -126,8 +113,6 @@ public class FileManager
             PdfDocument pdf = convertBitmapToPdf(bitmap);
             pdf.writeTo(os);
             pdf.close();
-
-            Toast.makeText(context, "PDF saved to " + output.getAbsolutePath(), Toast.LENGTH_SHORT).show();
         }
         catch (IOException e)
         {
