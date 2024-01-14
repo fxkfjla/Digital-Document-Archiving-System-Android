@@ -1,0 +1,10 @@
+<resources>
+    <color name="white">#f7f7f7</color>
+    <color name="tan">#A69384</color>
+    <color name="light_tan">#D6CBBE</color>
+    <color name="black">#252525</color>
+    <color name="primary_bg">@color/tan</color>
+    <color name="primary_fg">@color/black</color>
+    <color name="navbar_bg">#444</color>
+    <color name="border_col">#c4ab97</color>
+</resources>
