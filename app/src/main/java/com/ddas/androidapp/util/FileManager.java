@@ -133,7 +133,6 @@ public class FileManager
         pdfDocument.finishPage(page);
 
         return pdfDocument;
-
     }
 
     public static Bitmap convertImageToBitmap(ImageProxy image)
